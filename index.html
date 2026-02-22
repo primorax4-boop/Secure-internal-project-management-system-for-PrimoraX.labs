@@ -119,16 +119,16 @@ input,select,textarea{outline:none;font-family:var(--ff);font-size:16px !importa
 .tb-right{display:flex;align-items:center;gap:8px;}
 
 /* CONTENT */
-#content{flex:1;overflow-y:auto;padding:22px 24px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;min-height:0;}
-#content:not([style]){overflow-y:auto;}
-.page{animation:pageIn .22s ease both;flex:1;}
+#content{flex:1;overflow-y:auto;padding:22px 24px;-webkit-overflow-scrolling:touch;}
+.page{animation:pageIn .22s ease both;}
 @keyframes pageIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 
 /* REUSABLE */
 .badge{display:inline-flex;align-items:center;border-radius:5px;padding:2px 8px;font-size:10px;font-family:var(--fm);font-weight:600;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;gap:3px;}
 .avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-weight:700;flex-shrink:0;letter-spacing:.04em;}
-.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r12);transition:border-color .15s;}
-.card:hover{border-color:var(--border3);}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r12);transition:all .2s;}
+.card:hover{border-color:var(--border3);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2);}
 .stat-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r12);padding:16px 18px;}
 .stat-icon{font-size:20px;margin-bottom:8px;}
 .stat-val{font-family:var(--fd);font-weight:700;font-size:24px;margin-bottom:3px;}
@@ -158,8 +158,10 @@ input,select,textarea{outline:none;font-family:var(--ff);font-size:16px !importa
 .back-btn:hover{color:var(--blue3);}
 
 /* BUTTONS - all touch-friendly */
-.btn-p{background:linear-gradient(135deg,#1565c0,#0d47a1);color:#fff;padding:10px 20px;border-radius:var(--r8);font-size:13px;font-weight:600;box-shadow:0 3px 12px rgba(21,101,192,.3);white-space:nowrap;transition:all .15s;min-height:42px;}
-.btn-p:hover{opacity:.9;transform:translateY(-1px);}
+.btn-p{background:linear-gradient(135deg,#1565c0,#0d47a1);color:#fff;padding:10px 20px;border-radius:var(--r8);font-size:13px;font-weight:600;box-shadow:0 3px 12px rgba(21,101,192,.3);white-space:nowrap;transition:all .2s;min-height:42px;position:relative;overflow:hidden;}
+.btn-p::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#1a72d4,#0d5aa3);opacity:0;transition:opacity .2s;}
+.btn-p:hover::before{opacity:1;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(21,101,192,.4);}
 .btn-s{background:var(--bg4);color:var(--text3);padding:10px 16px;border-radius:var(--r8);font-size:13px;border:1px solid var(--border2);white-space:nowrap;transition:all .14s;min-height:42px;}
 .btn-s:hover{background:var(--bg5);color:var(--text2);}
 .btn-sm{background:var(--bg4);color:var(--text3);padding:7px 13px;border-radius:6px;font-size:12px;font-family:var(--fm);border:1px solid var(--border2);transition:all .14s;min-height:36px;}
@@ -262,27 +264,45 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .doc-data-preview img{max-width:100%;border-radius:6px;}
 
 /* ─── GROUP CHAT ─────────────────────────────────────── */
-#chat-wrap{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
-@media(max-width:768px){#chat-wrap{padding-bottom:env(safe-area-inset-bottom);}}
-#chat-messages{flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch;min-height:0;}
+#chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 58px);overflow:hidden;}
+@media(max-width:768px){#chat-wrap{height:calc(100vh - 58px - 68px);}}
+#chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
 #chat-input-bar{padding:12px 16px;border-top:1px solid var(--border);background:var(--bg2);display:flex;gap:10px;align-items:flex-end;flex-shrink:0;}
-.chat-msg{display:flex;gap:10px;max-width:85%;}
-.chat-msg.mine{flex-direction:row-reverse;align-self:flex-end;}
-.chat-msg.mine .chat-bubble{background:linear-gradient(135deg,#1565c0,#0d47a1);color:#fff;border-radius:18px 18px 4px 18px;}
-.chat-msg.theirs .chat-bubble{background:var(--bg3);border:1px solid var(--border);border-radius:18px 18px 18px 4px;}
-.chat-bubble{padding:10px 14px;font-size:13px;line-height:1.6;max-width:100%;word-break:break-word;}
-.chat-meta{font-size:10px;margin-top:3px;font-family:var(--fm);}
-.chat-msg.mine .chat-meta{text-align:right;color:rgba(78,196,252,.7);}
+.chat-msg{display:flex;gap:10px;max-width:85%;animation:msgSlideIn .3s ease-out;opacity:0;animation-fill-mode:forwards;}
+.chat-msg.mine{flex-direction:row-reverse;align-self:flex-end;animation-delay:.05s;}
+.chat-msg.theirs{animation-delay:.1s;}
+@keyframes msgSlideIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.chat-msg.mine .chat-bubble{background:linear-gradient(135deg,#1565c0,#0d47a1);color:#fff;border-radius:18px 18px 4px 18px;box-shadow:0 2px 8px rgba(21,101,192,.25);}
+.chat-msg.theirs .chat-bubble{background:var(--bg3);border:1px solid var(--border);border-radius:18px 18px 18px 4px;box-shadow:0 2px 6px rgba(0,0,0,.15);}
+.chat-bubble{padding:11px 15px;font-size:13.5px;line-height:1.6;max-width:100%;word-break:break-word;transition:transform .15s,box-shadow .15s;}
+.chat-bubble:hover{transform:scale(1.01);}
+.chat-meta{font-size:10px;margin-top:4px;font-family:var(--fm);opacity:.8;}
+.chat-msg.mine .chat-meta{text-align:right;color:rgba(255,255,255,.7);}
 .chat-msg.theirs .chat-meta{color:var(--text5);}
-.chat-date-divider{text-align:center;font-size:10px;color:var(--text5);font-family:var(--fm);padding:6px 0;letter-spacing:.06em;text-transform:uppercase;}
-.chat-typing-area{flex:1;background:var(--bg4);border:1.5px solid var(--border2);border-radius:14px;color:var(--text);padding:11px 14px;font-size:15px;resize:none;max-height:120px;min-height:44px;line-height:1.5;transition:border-color .2s;}
-.chat-typing-area:focus{border-color:var(--blue2);}
-.chat-send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1565c0,#0d47a1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px rgba(21,101,192,.4);transition:all .15s;}
-.chat-send-btn:hover{transform:scale(1.08);}
+.chat-date-divider{text-align:center;font-size:10px;color:var(--text5);font-family:var(--fm);padding:8px 0;letter-spacing:.06em;text-transform:uppercase;position:relative;margin:8px 0;}
+.chat-date-divider::before,.chat-date-divider::after{content:'';position:absolute;top:50%;width:30%;height:1px;background:var(--border);}
+.chat-date-divider::before{left:0;}
+.chat-date-divider::after{right:0;}
+.chat-typing-area{flex:1;background:var(--bg4);border:1.5px solid var(--border2);border-radius:14px;color:var(--text);padding:11px 14px;font-size:15px;resize:none;max-height:120px;min-height:44px;line-height:1.5;transition:all .2s;}
+.chat-typing-area:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(26,114,212,.1);}
+.chat-send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1565c0,#0d47a1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 12px rgba(21,101,192,.4);transition:all .2s;position:relative;overflow:hidden;}
+.chat-send-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#1a72d4,#0d5aa3);opacity:0;transition:opacity .2s;}
+.chat-send-btn:hover::before{opacity:1;}
+.chat-send-btn:hover{transform:scale(1.08);box-shadow:0 4px 16px rgba(21,101,192,.5);}
 .chat-send-btn:active{transform:scale(.95);}
-.chat-name-badge{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;padding:0 2px;}
+.chat-name-badge{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:5px;padding:0 2px;display:flex;align-items:center;gap:6px;}
+.chat-online-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 0 2px var(--bg2),0 0 0 4px rgba(86,194,106,.2);animation:pulseDot 2s ease-in-out infinite;}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(1.1);}}
 .chat-msg.mine .chat-name-badge{display:none;}
 .chat-unread{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-family:var(--fm);font-weight:700;margin-left:4px;}
+.chat-typing-indicator{display:flex;gap:4px;padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;max-width:fit-content;margin-bottom:4px;font-size:11px;color:var(--text4);font-family:var(--fm);}
+.chat-typing-dots{display:flex;gap:3px;margin-left:4px;}
+.chat-typing-dot{width:6px;height:6px;border-radius:50%;background:var(--text5);animation:typingDot 1.4s ease-in-out infinite;}
+.chat-typing-dot:nth-child(2){animation-delay:.2s;}
+.chat-typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-6px);opacity:1;}}
+.chat-header-online{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text4);font-family:var(--fm);margin-left:auto;}
+.chat-header-online-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulseDot 2s ease-in-out infinite;}
 
 /* MOBILE */
 @media(max-width:768px){
@@ -321,7 +341,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
       </div>
       <div class="inp-group">
         <label class="inp-label">Username</label>
-        <input class="inp" id="l-user" placeholder="" autocomplete="username" autocapitalize="none" spellcheck="false"/>
+        <input class="inp" id="l-user" placeholder="e.g. vishal.elec" autocomplete="username" autocapitalize="none" spellcheck="false"/>
       </div>
       <div class="inp-group">
         <label class="inp-label">Password</label>
@@ -406,6 +426,10 @@ tr:hover td{background:rgba(255,255,255,.015);}
 <!-- NOTIFICATIONS & MODALS -->
 <div id="notif"></div>
 <div id="modal-root"></div>
+
+<!-- Firebase for real-time group chat (free tier) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <script>
 'use strict';
@@ -549,6 +573,139 @@ function stopInactivityWatch() {
 //   'appdata' — projects, tasks, docs, notes, comments
 //   'meta'    — misc metadata
 // ═══════════════════════════════════════════════════════
+// FIREBASE — Real-time group chat (free tier, no paid APIs)
+// Get this from Firebase Console: Project Settings → Your apps → Config.
+// Create a project at https://console.firebase.google.com → Realtime Database → Create.
+// Enable read/write for testing: Rules tab set to { "rules": { ".read": true, ".write": true } }
+// ═══════════════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey:            'AIzaSyC8SaNwndgJNNcu9IMAzlwZFuP6yMIR7NA',
+  authDomain:        'primorax-ops.firebaseapp.com',
+  databaseURL:       'https://primorax-ops-default-rtdb.firebaseio.com',
+  projectId:         'primorax-ops',
+  storageBucket:     'primorax-ops.firebasestorage.app',
+  messagingSenderId: '525693856762',
+  appId:             '1:525693856762:web:0606cc21534b0a75a69243'
+};
+let firebaseDb = null;
+const FIREBASE_CHAT_REF = 'primorax_groupChat';
+
+function isFirebaseChatEnabled() {
+  return typeof firebase !== 'undefined' && FIREBASE_CONFIG.databaseURL && firebaseDb;
+}
+
+function initFirebaseChat() {
+  if (!FIREBASE_CONFIG.databaseURL || typeof firebase === 'undefined') return;
+  if (firebaseDb) return;
+  try {
+    if (!firebase.apps.length) {
+      const config = { ...FIREBASE_CONFIG };
+      if (!config.apiKey) config.apiKey = 'demo-api-key';
+      if (!config.authDomain) config.authDomain = 'primorax-ops.firebaseapp.com';
+      if (!config.projectId) config.projectId = 'primorax-ops';
+      if (!config.storageBucket) config.storageBucket = 'primorax-ops.appspot.com';
+      if (!config.messagingSenderId) config.messagingSenderId = '000000000000';
+      if (!config.appId) config.appId = '1:000000000000:web:demo';
+      firebase.initializeApp(config);
+    }
+    firebaseDb = firebase.database();
+    const ref = firebaseDb.ref(FIREBASE_CHAT_REF);
+    ref.once('value').then(snap => {
+      const list = [];
+      snap.forEach(c => {
+        const v = c.val();
+        if (v && v.by) list.push({ id: c.key, by: v.by, name: v.name || v.by, text: v.text || '', ts: v.ts || 0 });
+      });
+      list.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+      groupChat = list;
+      persistAll();
+      if (page === 'groupchat') {
+        const msgArea = $('chat-messages');
+        if (msgArea) {
+          msgArea.innerHTML = buildChatMessages();
+          msgArea.scrollTop = msgArea.scrollHeight;
+        }
+      }
+      ref.on('child_added', snap => {
+        const val = snap.val();
+        if (!val || !val.by) return;
+        const msg = { id: snap.key, by: val.by, name: val.name || val.by, text: val.text || '', ts: val.ts || Date.now() };
+        if (groupChat.some(m => m.id === msg.id)) return;
+        groupChat.push(msg);
+        groupChat.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+        persistAll();
+        const msgArea = $('chat-messages');
+        if (msgArea) {
+          msgArea.innerHTML = buildChatMessages();
+          msgArea.scrollTop = msgArea.scrollHeight;
+        }
+      });
+      
+      const presenceRef = firebaseDb.ref('presence');
+      presenceRef.on('value', snap => {
+        const presences = snap.val() || {};
+        const online = Object.keys(presences).filter(u => {
+          const p = presences[u];
+          return p && (p.lastSeen > Date.now() - 300000);
+        });
+        const onlineEl = $('chat-online-status');
+        const countEl = $('chat-online-count');
+        if (onlineEl && countEl) {
+          const count = online.length;
+          onlineEl.style.display = count > 0 ? 'flex' : 'none';
+          countEl.textContent = count;
+        }
+      });
+      
+      presenceRef.on('child_changed', snap => {
+        const val = snap.val();
+        if (val && val.typing && snap.key !== CU.username) {
+          typingUsers[snap.key] = Date.now();
+        } else if (snap.key !== CU.username) {
+          delete typingUsers[snap.key];
+        }
+        if (page === 'groupchat') {
+          const msgArea = $('chat-messages');
+          if (msgArea) {
+            const scrollPos = msgArea.scrollHeight - msgArea.scrollTop;
+            const wasAtBottom = scrollPos < 100;
+            msgArea.innerHTML = buildChatMessages();
+            if (wasAtBottom) {
+              setTimeout(() => { msgArea.scrollTop = msgArea.scrollHeight; }, 10);
+            } else {
+              msgArea.scrollTop = msgArea.scrollHeight - scrollPos;
+            }
+          }
+        }
+      });
+      
+      setInterval(() => {
+        const now = Date.now();
+        let updated = false;
+        Object.keys(typingUsers).forEach(u => {
+          if (now - typingUsers[u] > 3000) {
+            delete typingUsers[u];
+            updated = true;
+          }
+        });
+        if (updated && page === 'groupchat') {
+          const msgArea = $('chat-messages');
+          if (msgArea) {
+            const scrollPos = msgArea.scrollHeight - msgArea.scrollTop;
+            msgArea.innerHTML = buildChatMessages();
+            msgArea.scrollTop = msgArea.scrollHeight - scrollPos;
+          }
+        }
+      }, 1000);
+      
+      const myPresenceRef = firebaseDb.ref(`presence/${CU.username}`);
+      myPresenceRef.set({ online: true, lastSeen: Date.now(), typing: false });
+      myPresenceRef.onDisconnect().set({ online: false, lastSeen: Date.now(), typing: false });
+    }).catch(() => {});
+  } catch (e) { console.warn('Firebase chat init failed:', e); }
+}
+
+// ═══════════════════════════════════════════════════════
 let DB = null;
 const DB_NAME    = 'PrimoraXv3';
 const DB_VERSION = 3;
@@ -632,155 +789,8 @@ async function persistAll() {
     await dbSet('archNotes',    archNotes);
     await dbSet('projComments', projComments);
     await dbSet('groupChat',    groupChat);
-    await dbSet('users_data',   USERS);
-    // Broadcast to other tabs that data changed
-    SYNC.broadcast('data_changed');
+    await dbSet('users_data',   USERS);   // ← Persist all user edits
   }, 400);
-}
-
-// ═══════════════════════════════════════════════════════
-// REAL-TIME SYNC ENGINE
-// Uses BroadcastChannel (built-in, free, zero API) so
-// multiple tabs/windows of this app stay in sync live.
-// Also runs a 3-second polling loop as a fallback for
-// browsers that don't support BroadcastChannel.
-// Result: any change in one tab appears instantly in all
-// other open tabs — group chat, tasks, projects, docs.
-// ═══════════════════════════════════════════════════════
-const SYNC = {
-  channel: null,
-  pollTimer: null,
-  lastHash: '',   // detect actual changes
-
-  init() {
-    // BroadcastChannel: real-time tab-to-tab messaging
-    try {
-      this.channel = new BroadcastChannel('px_sync');
-      this.channel.onmessage = async (e) => {
-        if (!CU) return; // not logged in
-        if (e.data?.type === 'data_changed') {
-          await this.pullAndRefresh();
-        }
-      };
-    } catch(e) {
-      console.warn('BroadcastChannel not supported, using polling only');
-    }
-    // Polling fallback: check DB every 3 seconds for changes
-    this.startPolling();
-  },
-
-  broadcast(type) {
-    try { this.channel?.postMessage({ type }); } catch(e) {}
-  },
-
-  startPolling() {
-    clearInterval(this.pollTimer);
-    this.pollTimer = setInterval(() => this.pollCheck(), 3000);
-  },
-
-  stopPolling() {
-    clearInterval(this.pollTimer);
-    try { this.channel?.close(); } catch(e) {}
-  },
-
-  async pollCheck() {
-    if (!CU || !DB) return;
-    try {
-      // Read a lightweight fingerprint from DB to detect changes
-      const saved = await dbGet('groupChat');
-      const hash = JSON.stringify(saved?.length) + JSON.stringify(saved?.slice(-1));
-      if (hash !== this.lastHash) {
-        this.lastHash = hash;
-        await this.pullAndRefresh();
-      }
-    } catch(e) {}
-  },
-
-  async pullAndRefresh() {
-    if (!CU || !DB) return;
-    // Pull fresh data from IndexedDB
-    const newProjects     = (await dbGet('projects'))     || [];
-    const newTasks        = (await dbGet('tasks'))        || [];
-    const newDocs         = (await dbGet('docs'))         || [];
-    const newNotes        = (await dbGet('archNotes'))    || [];
-    const newComments     = (await dbGet('projComments')) || {};
-    const newChat         = (await dbGet('groupChat'))    || [];
-    const newUsers        = await dbGet('users_data');
-
-    // Check if anything actually changed before re-rendering
-    const changed =
-      JSON.stringify(newProjects)  !== JSON.stringify(projects) ||
-      JSON.stringify(newTasks)     !== JSON.stringify(tasks)    ||
-      JSON.stringify(newDocs)      !== JSON.stringify(docs)     ||
-      JSON.stringify(newNotes)     !== JSON.stringify(archNotes)||
-      JSON.stringify(newComments)  !== JSON.stringify(projComments) ||
-      JSON.stringify(newChat)      !== JSON.stringify(groupChat);
-
-    if (!changed) return;
-
-    // Apply updates
-    projects     = newProjects;
-    tasks        = newTasks;
-    docs         = newDocs;
-    archNotes    = newNotes;
-    projComments = newComments;
-    groupChat    = newChat;
-    if (newUsers) {
-      for (const un of Object.keys(newUsers)) USERS[un] = newUsers[un];
-    }
-
-    // Smart refresh: update only what's visible
-    if (page === 'groupchat') {
-      // Chat: only update messages, don't destroy the input
-      const msgArea = $('chat-messages');
-      if (msgArea) {
-        msgArea.innerHTML = buildChatMessages();
-        msgArea.scrollTop = msgArea.scrollHeight;
-      }
-    } else {
-      // All other pages: full re-render
-      renderContent();
-      renderTopBar();
-    }
-    // Update unread badge on chat nav item
-    updateChatBadge();
-  }
-};
-
-let _lastSeenChatCount = 0;
-function updateChatBadge() {
-  const count = groupChat.length - _lastSeenChatCount;
-  const nav = $('bn-groupchat');
-  if (nav) {
-    const badge = nav.querySelector('.chat-badge');
-    if (count > 0 && page !== 'groupchat') {
-      if (!badge) {
-        const b = document.createElement('span');
-        b.className = 'chat-badge';
-        b.style.cssText = 'position:absolute;top:2px;right:2px;width:8px;height:8px;background:var(--red);border-radius:50%;';
-        nav.style.position = 'relative';
-        nav.appendChild(b);
-      }
-    } else {
-      if (badge) badge.remove();
-      _lastSeenChatCount = groupChat.length;
-    }
-  }
-  // Also update sidebar chat nav item
-  const sbChat = document.querySelector('.nb[onclick*="groupchat"]');
-  if (sbChat) {
-    const existing = sbChat.querySelector('.chat-dot');
-    if (count > 0 && page !== 'groupchat') {
-      if (!existing) {
-        const dot = document.createElement('span');
-        dot.className = 'chat-dot';
-        dot.style.cssText = 'width:7px;height:7px;background:var(--red);border-radius:50%;flex-shrink:0;';
-        sbChat.appendChild(dot);
-      }
-    } else {
-      existing?.remove();
-    }
-  }
 }
 
 async function loadAll() {
@@ -791,21 +801,17 @@ async function loadAll() {
   projComments = (await dbGet('projComments')) || {};
   groupChat    = (await dbGet('groupChat'))    || [];
 
-  // Load saved user overrides. Saved data WINS over hardcoded defaults.
-  // This ensures CEO edits (name, domain, password, enable/disable, new accounts)
-  // permanently survive refreshes without being overwritten by hardcoded values.
+  // Merge saved user overrides on top of the hardcoded defaults.
+  // This means: preset passwords/names are the floor, but any
+  // CEO edits (domain change, new accounts, disable, password
+  // change) are permanently layered over the top.
   const savedUsers = await dbGet('users_data');
-  if (savedUsers && Object.keys(savedUsers).length > 0) {
-    // Completely replace USERS with the saved version, but keep any
-    // hardcoded users that weren't in the saved snapshot (new additions to code)
+  if (savedUsers) {
+    // Add any new saved accounts not in hardcoded defaults
+    Object.assign(USERS, savedUsers);
+    // Apply edits to existing accounts
     for (const un of Object.keys(savedUsers)) {
-      USERS[un] = savedUsers[un]; // saved data fully wins
-    }
-    // Add any hardcoded users not yet in saved data
-    for (const un of Object.keys(USERS)) {
-      if (!savedUsers[un]) {
-        // new hardcoded user — will be saved next persistAll
-      }
+      if (USERS[un]) Object.assign(USERS[un], savedUsers[un]);
     }
   }
 }
@@ -980,6 +986,7 @@ async function doLogin() {
     _rememberMe = _rmOn;
     await createSession(un, _rmOn);
     await loadAll(); // pull permanent data from IndexedDB
+    initFirebaseChat();
     showScreen('s-welcome');
     buildWelcome();
   } else {
@@ -1002,14 +1009,13 @@ async function doLogin() {
 
 async function doLogout() {
   stopInactivityWatch();
-  SYNC.stopPolling();
   clearSession();
   CU = null; selProj = null; page = 'dashboard';
-  projects = []; tasks = []; docs = []; archNotes = []; projComments = {}; groupChat = [];
-  _lastSeenChatCount = 0;
+  projects = []; tasks = []; docs = []; archNotes = []; projComments = {};
   showScreen('s-login');
   $('l-user').value = ''; $('l-pass').value = '';
   _rmOn = false;
+  // Reset toggle visual
   const tog = $('rm-toggle'), knob = $('rm-knob'), lbl = $('rm-on');
   if (tog) { tog.style.background='var(--bg5)';tog.style.borderColor='var(--border2)'; }
   if (knob) { knob.style.left='1px';knob.style.background='var(--text5)'; }
@@ -1074,7 +1080,6 @@ function initApp() {
   const mb = $('menu-btn');
   if (window.innerWidth <= 768) mb.style.display = 'flex';
   startInactivityWatch();
-  SYNC.init();
   renderSidebar();
   renderTopBar();
   navigate('dashboard');
@@ -1086,23 +1091,18 @@ function navigate(p, proj) {
   if (proj) selProj = proj;
   activeTab = 'overview'; taskExp = {}; docOpen = {};
   fStatus = 'All'; fVis = 'all'; fTask = 'All';
-
-  // When entering chat, mark all messages as seen
-  if (p === 'groupchat') {
-    _lastSeenChatCount = groupChat.length;
-    updateChatBadge();
-  }
-
-  const c = $('content');
-  if (p === 'groupchat') {
-    c.style.cssText = 'padding:0;overflow:hidden;display:flex;flex-direction:column;flex:1;';
-  } else {
-    c.style.cssText = '';
-  }
-
   renderTopBar(); renderSidebar(); updateBottomNav();
+  const c = $('content');
   c.innerHTML = '';
-  setTimeout(() => renderContent(), 10);
+  // Chat page needs zero padding and no overflow so it handles its own scroll
+  if (p === 'groupchat') {
+    c.style.padding = '0';
+    c.style.overflow = 'hidden';
+  } else {
+    c.style.padding = '';
+    c.style.overflow = '';
+  }
+  setTimeout(() => { renderContent(); }, 10);
   closeSB();
 }
 
@@ -1175,24 +1175,20 @@ function renderTopBar() {
 // ═══════════════════════════════════════════════════════
 function renderContent() {
   const c = $('content');
-  if (page === 'groupchat') {
-    // Chat must fill the entire content area with NO wrapper padding
-    c.innerHTML = renderGroupChat();
-    afterChatRender();
-  } else {
-    const map = {
-      dashboard: renderDashboard,
-      projects: renderProjects,
-      'proj-detail': renderProjDetail,
-      tasks: renderTasksPage,
-      documents: renderDocsPage,
-      finance: isCEO() ? renderFinance : renderDashboard,
-      users: isCEO() ? renderUsers : renderDashboard,
-      delivery: isCEO() ? renderDelivery : renderDashboard,
-      architecture: renderArchitecture,
-    };
-    c.innerHTML = `<div class="page">${(map[page] || renderDashboard)()}</div>`;
-  }
+  const map = {
+    dashboard: renderDashboard,
+    projects: renderProjects,
+    'proj-detail': renderProjDetail,
+    tasks: renderTasksPage,
+    documents: renderDocsPage,
+    groupchat: renderGroupChat,
+    finance: isCEO() ? renderFinance : renderDashboard,
+    users: isCEO() ? renderUsers : renderDashboard,
+    delivery: isCEO() ? renderDelivery : renderDashboard,
+    architecture: renderArchitecture,
+  };
+  c.innerHTML = `<div class="page">${(map[page] || renderDashboard)()}</div>`;
+  if (page === 'groupchat') afterChatRender();
 }
 
 // ─── DASHBOARD ─────────────────────────────────────────
@@ -1699,110 +1695,205 @@ function renderDelivery(){
 
 // ─── GROUP CHAT ────────────────────────────────────────
 function renderGroupChat() {
+  // Group chat renders its own layout outside the normal card flow
+  // The chat input bar is fixed at bottom; messages scroll above
   return `
   <div id="chat-wrap">
-    <div id="chat-messages">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <span style="font-family:var(--fd);font-weight:700;font-size:15px;">💬 Team Chat</span>
+      ${isFirebaseChatEnabled() ? '<span class="badge" style="background:rgba(86,194,106,.2);color:var(--green);border:1px solid rgba(86,194,106,.4);display:flex;align-items:center;gap:4px;"><span class="chat-header-online-dot"></span>Live</span>' : '<span class="badge" style="background:var(--bg4);color:var(--text5);border:1px solid var(--border2);">Local only</span>'}
+      <div class="chat-header-online" id="chat-online-status" style="display:none;">
+        <span class="chat-header-online-dot"></span>
+        <span id="chat-online-count">0</span> online
+      </div>
+    </div>
+    <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;">
       ${buildChatMessages()}
     </div>
-    <div style="padding:10px 14px 14px;border-top:1px solid var(--border);background:var(--bg2);display:flex;gap:10px;align-items:flex-end;flex-shrink:0;">
+    <div id="chat-input-bar" style="padding:12px 16px;border-top:1px solid var(--border);background:var(--bg2);display:flex;gap:10px;align-items:flex-end;flex-shrink:0;transition:background .2s;">
       ${av(CU.avatar,36,CU.color)}
-      <textarea class="chat-typing-area" id="chat-inp" placeholder="Message the team… (Enter to send)" rows="1"
+      <textarea class="chat-typing-area" id="chat-inp" placeholder="Type a message…" rows="1"
         oninput="autoResizeChat(this)"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
-      <button class="chat-send-btn" onclick="sendChat()" title="Send">➤</button>
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"
+        onfocus="this.parentElement.style.background='var(--bg3)'"
+        onblur="this.parentElement.style.background='var(--bg2)'"></textarea>
+      <button class="chat-send-btn" onclick="sendChat()" title="Send (Enter)" id="chat-send-btn">➤</button>
     </div>
   </div>`;
 }
 
 function buildChatMessages() {
-  if (!groupChat.length) {
-    return `<div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:200px;">
-      <div style="text-align:center;">
-        <div style="font-size:44px;margin-bottom:14px;">💬</div>
-        <div style="font-size:15px;font-weight:600;color:var(--text3);margin-bottom:6px;">Team Group Chat</div>
-        <div style="font-size:12px;color:var(--text5);font-family:var(--fm);">Be the first to say something!</div>
+  const typingHtml = buildTypingIndicator();
+  if (!groupChat.length && !typingHtml) {
+    return `<div style="flex:1;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;color:var(--text5);animation:fadeIn .4s ease;">
+        <div style="font-size:48px;margin-bottom:16px;opacity:.8;">💬</div>
+        <div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:8px;">Team Group Chat</div>
+        <div style="font-size:13px;font-family:var(--fm);color:var(--text4);">Start the conversation!</div>
+        ${!isFirebaseChatEnabled() ? '<div style="font-size:11px;margin-top:14px;color:var(--text5);padding:8px 12px;background:var(--bg3);border-radius:8px;display:inline-block;">Add Firebase config for real-time sync</div>' : ''}
       </div>
     </div>`;
   }
 
-  let html = '';
+  let html = typingHtml || '';
   let lastDate = '';
-  groupChat.forEach(msg => {
-    const d = new Date(msg.ts);
-    const msgDate = d.toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long'});
-    if (msgDate !== lastDate) {
+  let lastMsgTime = 0;
+  groupChat.forEach((msg, idx) => {
+    const msgDate = new Date(msg.ts).toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long'});
+    const msgTime = msg.ts || 0;
+    const showDateDivider = msgDate !== lastDate;
+    const showTimeGap = idx > 0 && (msgTime - lastMsgTime) > 300000;
+    
+    if (showDateDivider) {
       html += `<div class="chat-date-divider">${msgDate}</div>`;
       lastDate = msgDate;
+    } else if (showTimeGap) {
+      html += `<div class="chat-date-divider" style="font-size:9px;padding:4px 0;">${formatRelativeTime(msg.ts)}</div>`;
     }
+    
     const mine = msg.by === CU.username;
     const u = USERS[msg.by];
-    const timeStr = d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+    const timeStr = formatMessageTime(msg.ts);
+    const isRecent = Date.now() - msg.ts < 60000;
+    
     html += `
-    <div class="chat-msg ${mine?'mine':'theirs'}">
-      ${!mine ? av(u?.avatar||'?', 32, u?.color||'#1565c0') : ''}
-      <div style="max-width:76%;min-width:0;">
-        ${!mine ? `<div class="chat-name-badge">${u?.name?.split(' ')[0]||msg.by}<span style="color:var(--text5);font-weight:400;"> · ${u?.domain||''}</span></div>` : ''}
+    <div class="chat-msg ${mine?'mine':'theirs'}" data-msg-id="${msg.id}">
+      ${!mine ? `<div style="position:relative;">${av(u?.avatar||'?', 32, u?.color||'#1565c0')}${isFirebaseChatEnabled() && isRecent ? '<span class="chat-online-dot" style="position:absolute;bottom:0;right:0;"></span>' : ''}</div>` : ''}
+      <div style="max-width:75%;min-width:0;">
+        ${!mine ? `<div class="chat-name-badge">${u?.name?.split(' ')[0]||msg.by} · ${u?.domain||''}</div>` : ''}
         <div class="chat-bubble">${escapeHtml(msg.text)}</div>
-        <div class="chat-meta">${timeStr}${mine?' · You':''}</div>
+        <div class="chat-meta">${timeStr}${mine ? (isRecent ? ' · Just now' : ' · Sent') : ''}</div>
       </div>
     </div>`;
+    lastMsgTime = msgTime;
   });
   return html;
 }
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
-    .replace(/\n/g,'<br>');
+function formatMessageTime(ts) {
+  const now = Date.now();
+  const diff = now - ts;
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  
+  if (minutes < 1) return 'Just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 7) return `${days}d ago`;
+  return new Date(ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
 }
 
+function formatRelativeTime(ts) {
+  const now = Date.now();
+  const diff = now - ts;
+  const hours = Math.floor(diff / 3600000);
+  if (hours < 1) return 'Recent';
+  if (hours < 24) return `${hours}h ago`;
+  return new Date(ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+}
+
+let typingUsers = {};
+function buildTypingIndicator() {
+  const others = Object.keys(typingUsers).filter(u => u !== CU.username && typingUsers[u] > Date.now() - 2000);
+  if (others.length === 0) return '';
+  const names = others.map(u => USERS[u]?.name?.split(' ')[0] || u).join(', ');
+  return `<div class="chat-typing-indicator">
+    ${names} ${others.length === 1 ? 'is' : 'are'} typing
+    <div class="chat-typing-dots">
+      <div class="chat-typing-dot"></div>
+      <div class="chat-typing-dot"></div>
+      <div class="chat-typing-dot"></div>
+    </div>
+  </div>`;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+
+let typingTimeout = null;
 function autoResizeChat(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  
+  if (isFirebaseChatEnabled() && firebaseDb) {
+    const presenceRef = firebaseDb.ref(`presence/${CU.username}`);
+    presenceRef.set({ typing: true, lastSeen: Date.now() });
+    presenceRef.onDisconnect().set({ typing: false, lastSeen: Date.now() });
+    
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      presenceRef.set({ typing: false, lastSeen: Date.now() });
+    }, 2000);
+  }
 }
 
-async function sendChat() {
+function sendChat() {
   const inp = $('chat-inp');
+  const sendBtn = $('chat-send-btn');
   if (!inp) return;
   const text = inp.value.trim();
   if (!text) return;
 
-  const msg = {
-    id: Date.now() + Math.random(),
+  if (sendBtn) {
+    sendBtn.style.transform = 'scale(0.9)';
+    setTimeout(() => { if (sendBtn) sendBtn.style.transform = ''; }, 150);
+  }
+
+  if (isFirebaseChatEnabled()) {
+    firebaseDb.ref(FIREBASE_CHAT_REF).push({
+      by: CU.username,
+      name: CU.name || CU.username,
+      text,
+      ts: Date.now()
+    });
+    inp.value = '';
+    inp.style.height = 'auto';
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+      firebaseDb.ref(`presence/${CU.username}`).set({ typing: false, lastSeen: Date.now() });
+    }
+    const msgArea = $('chat-messages');
+    if (msgArea) {
+      setTimeout(() => { msgArea.scrollTop = msgArea.scrollHeight; }, 100);
+    }
+    return;
+  }
+
+  groupChat.push({
+    id: Date.now(),
     by: CU.username,
     name: CU.name,
     text,
     ts: Date.now()
-  };
+  });
 
-  groupChat.push(msg);
   inp.value = '';
   inp.style.height = 'auto';
+  persistAll();
 
-  // Immediately update the UI for the sender
   const msgArea = $('chat-messages');
   if (msgArea) {
     msgArea.innerHTML = buildChatMessages();
-    msgArea.scrollTop = msgArea.scrollHeight;
+    setTimeout(() => { msgArea.scrollTop = msgArea.scrollHeight; }, 50);
   }
-
-  // Persist immediately (no debounce for chat) and broadcast
-  await dbSet('groupChat', groupChat);
-  SYNC.broadcast('data_changed');
-  _lastSeenChatCount = groupChat.length;
 }
 
+// Auto-scroll to bottom when entering chat
 function afterChatRender() {
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     const msgArea = $('chat-messages');
-    if (msgArea) msgArea.scrollTop = msgArea.scrollHeight;
-    // Small delay to let mobile keyboard settle
-    setTimeout(() => {
-      const inp = $('chat-inp');
-      if (inp) inp.focus();
-    }, 100);
-  });
+    if (msgArea) {
+      msgArea.scrollTop = msgArea.scrollHeight;
+      msgArea.style.scrollBehavior = 'smooth';
+    }
+    const inp = $('chat-inp');
+    if (inp) {
+      inp.focus();
+      inp.style.transition = 'all .2s';
+    }
+  }, 100);
 }
 
 // ─── ARCHITECTURE ──────────────────────────────────────
@@ -2343,6 +2434,7 @@ document.head.appendChild(shakeCSS);
 
     // Load all app data from IndexedDB
     await loadAll();
+    initFirebaseChat();
 
     // Show a brief "restoring session" splash then jump straight to app
     showScreen('s-welcome');
