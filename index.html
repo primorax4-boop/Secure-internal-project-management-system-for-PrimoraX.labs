@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>PrimoraX.labs — Internal Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500;600&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="s-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-hex">⬡</div>
+        <div class="login-brand">PrimoraX<span style="color:var(--blue3)">.labs</span></div>
+        <div class="login-sub">Internal Operations System</div>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">Username</label>
+        <input class="inp" id="l-user" placeholder="e.g. vishal.elec" autocomplete="username" autocapitalize="none" spellcheck="false"/>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">Password</label>
+        <div class="pw-wrap">
+          <input class="inp" id="l-pass" type="password" placeholder="Your preset password" autocomplete="current-password"/>
+          <button class="pw-eye" id="l-eye" onclick="togglePW()" type="button">👁</button>
+        </div>
+      </div>
+      <div class="login-err" id="l-err">⚠ Invalid credentials. Contact your administrator.</div>
+      <div id="l-lock" style="display:none;background:rgba(252,177,68,.1);border:1px solid rgba(252,177,68,.3);color:#fcb144;border-radius:var(--r8);padding:10px 14px;font-size:12px;margin-bottom:16px;font-family:var(--fm);"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <label style="display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none;">
+          <div class="toggle-wrap" id="rm-toggle" onclick="toggleRM()" style="width:38px;height:22px;background:var(--bg5);border-radius:11px;border:1.5px solid var(--border2);position:relative;transition:all .2s;flex-shrink:0;">
+            <div id="rm-knob" style="width:16px;height:16px;background:var(--text5);border-radius:50%;position:absolute;top:1px;left:1px;transition:all .2s;"></div>
+          </div>
+          <span style="font-size:12px;color:var(--text4);font-family:var(--fm);">Remember me for 7 days</span>
+        </label>
+        <span id="rm-on" style="display:none;font-size:10px;color:var(--green);font-family:var(--fm);letter-spacing:.04em;">SESSION SAVED</span>
+      </div>
+      <button class="btn-login" onclick="doLogin()">Access System</button>
+      <p class="login-footer">🔒 RESTRICTED INTERNAL ACCESS · INTERNAL USE ONLY</p>
+    </div>
+  </div>
+</div>
+
+<!-- WELCOME SCREEN -->
+<div id="s-welcome" class="screen" style="flex-direction:column;">
+  <div id="welcome-card">
+    <div id="wc-av" class="wc-avatar" style="background:#0d47a1;margin:0 auto;"></div>
+    <div id="wc-time" style="font-size:12px;color:var(--text4);font-family:var(--fm);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;"></div>
+    <div id="wc-greet" class="wc-greeting"></div>
+    <div id="wc-full" class="wc-sub"></div>
+    <div id="wc-role-badge" class="wc-role team" style="margin-top:10px;"></div>
+    <div id="wc-facts" class="wc-facts"></div>
+    <div id="wc-quote" class="wc-quote"></div>
+    <button class="btn-enter" onclick="enterApp()">Enter Dashboard →</button>
+    <p style="font-size:11px;color:var(--text5);margin-top:16px;font-family:var(--fm);">
+      <span id="wc-date"></span>
+    </p>
+  </div>
+</div>
+
+<!-- APP SCREEN -->
+<div id="s-app" class="screen">
+  <div id="sb-overlay" onclick="closeSB()"></div>
+  <div id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-row">
+        <div class="sb-hex">⬡</div>
+        <div>
+          <div class="sb-brand">PrimoraX<span>.labs</span></div>
+          <div class="sb-tag">Internal Ops</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sb-nav" id="sb-nav"></nav>
+    <div class="sb-user" id="sb-user"></div>
+  </div>
+  <div id="main-area">
+    <div id="topbar">
+      <div class="tb-left">
+        <button id="menu-btn" onclick="toggleSB()" style="display:none;">☰</button>
+        <div>
+          <div class="tb-title" id="tb-title">Dashboard</div>
+          <div class="tb-date" id="tb-date"></div>
+        </div>
+      </div>
+      <div class="tb-right" id="tb-right"></div>
+    </div>
+    <div id="content"></div>
+  </div>
+  <div id="bottom-nav">
+    <div class="bnav-item" id="bn-dashboard" onclick="navigate('dashboard')"><span class="bnav-icon">◈</span>Home</div>
+    <div class="bnav-item" id="bn-projects" onclick="navigate('projects')"><span class="bnav-icon">⬡</span>Projects</div>
+    <div class="bnav-item" id="bn-tasks" onclick="navigate('tasks')"><span class="bnav-icon">◎</span>Tasks</div>
+    <div class="bnav-item" id="bn-groupchat" onclick="navigate('groupchat')"><span class="bnav-icon">💬</span>Chat</div>
+    <div class="bnav-item" id="bn-more" onclick="toggleSB()"><span class="bnav-icon">☰</span>More</div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS & MODALS -->
+<div id="notif"></div>
+<div id="modal-root"></div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script src="app.js"></script>
+</body>
+</html>
